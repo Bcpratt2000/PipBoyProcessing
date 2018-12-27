@@ -1,3 +1,5 @@
+import ddf.minim.*;
+
 final int STROKE_COLOR = #FFFF00;
 final int BKG_COLOR = #000000;
 
@@ -8,10 +10,14 @@ boolean isFirst=true;
 boolean mouseHasClicked = false;
 int px, py;
 
+Minim minim;
+AudioPlayer soundPress;
+AudioPlayer soundHum;
+
 void setup() {
   size(640, 360);
   strokeWeight(2);
-  frameRate(24);
+  frameRate(30);
   background(mapToColor(loadImage("assets/startup.png"), STROKE_COLOR));
 }
 
@@ -26,9 +32,18 @@ void draw() {
     screenArray[1] = new HomeScreen("Home", BKG_COLOR, STROKE_COLOR, this);
     screenArray[2] = new MapScreen("Map", BKG_COLOR, STROKE_COLOR, this);
     screenArray[3] = new RadioScreen("Radio", BKG_COLOR, STROKE_COLOR, this);
+    
+    minim = new Minim(this);
+    soundPress = minim.loadFile("assets/PipBoy/UI_Pipboy_OK.mp3");
+    soundHum = minim.loadFile("assets/PipBoy/UI_PipBoy_Hum_LP.wav");
+    soundHum.setGain(-12);
+    soundHum.loop();
+    delay(1000);
+    
   }
 
   if (mouseHasClicked) {
+    soundPress.loop(0);
     mouseHasClicked=false;
     if (py<60) {
       //clicked in upper screen
@@ -76,7 +91,9 @@ void drawUpper() {
   rect(0, 0, 640, 60);
   stroke(STROKE_COLOR);
   fill(STROKE_COLOR);
+  strokeWeight(2);
   line(0, 60, 640, 60);
+  strokeWeight(2);
   triangle(50, 30, 90, 10, 90, 50);
   triangle(590, 30, 550, 10, 550, 50);
   textSize(30);
@@ -86,12 +103,19 @@ void drawUpper() {
 
 void drawStaticLines() {
   float strokeCoeff = .25;
-  for (int i=0; i<height; i+=4) {
-    stroke(color(red(STROKE_COLOR)*strokeCoeff, green(STROKE_COLOR)*strokeCoeff, blue(STROKE_COLOR)*strokeCoeff, 128));
-    strokeWeight(2);
+  for (int i=0; i<height; i+=random(3)+3) {
+    stroke(color(red(STROKE_COLOR)*strokeCoeff, green(STROKE_COLOR)*strokeCoeff, blue(STROKE_COLOR)*strokeCoeff, 96));
+    strokeWeight(noise(i+millis())*2);
     line(0, i, width, i);
   }
+  
+  //for (int i=0; i<height; i+=4) {
+  //  stroke(color(red(STROKE_COLOR)*strokeCoeff, green(STROKE_COLOR)*strokeCoeff, blue(STROKE_COLOR)*strokeCoeff, 96));
+  //  strokeWeight(2);
+  //  line(0, i, width, i);
+  //}
 }
+
 
 void drawContent(int screenIndex, int px, int py) {
   screenArray[screenIndex].drawFrame(px, py);

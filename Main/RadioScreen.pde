@@ -1,4 +1,4 @@
-import ddf.minim.*;
+
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -9,12 +9,12 @@ class RadioScreen extends Screen {
   int currentStation = 0;
   boolean oldIsPlaying;
   int oldCurrentStation;
-  boolean queuedMusicPlay = false; // flag for queueing music to load on the next frame, in order to have time to draw a loading screen
+  boolean queuedMusicPlay = false; // flag for queueing music to load on the next frame, in order to have time to draw loading text
 
   Minim minim;
 
-  AudioPlayer[] soundFiles = new AudioPlayer[2];
-  String[] soundLabels = new String[2];
+  AudioPlayer[] soundFiles = new AudioPlayer[3];
+  String[] soundLabels = new String[3];
 
 
   public RadioScreen(String name, int BKG_COLOR, int STROKE_COLOR, PApplet parent) {
@@ -23,11 +23,13 @@ class RadioScreen extends Screen {
     minim = new Minim(PARENT);
 
     println("Loading Sound Files");
-    soundFiles[0] = minim.loadFile("assets/DiamondCityRadio.mp3");
-    soundFiles[1] = null;
+    soundFiles[0] = minim.loadFile("assets/DiamondCityRadio.wav");
+    soundFiles[1] = minim.loadFile("assets/GalaxyNewsRadio.wav");
+    soundFiles[2] = minim.loadFile("assets/AppalachiaRadio.wav");
     println("Sound Loaded");
     soundLabels[0] = "Diamond City Radio";
-    soundLabels[1] = "Classical Radio";
+    soundLabels[1] = "Galaxy News Radio";
+    soundLabels[2] = "Appalachia Radio";
 
     oldCurrentStation = currentStation;
     oldIsPlaying = false;
@@ -79,7 +81,7 @@ class RadioScreen extends Screen {
       //println("Music Loop");
 
       if (queuedMusicPlay) {
-        soundFiles[currentStation].play((int)(getMsSinceMidnight()%soundFiles[currentStation].length()/2));
+        soundFiles[currentStation].play((int)(getMsSinceMidnight()%soundFiles[currentStation].length()));
         queuedMusicPlay = false;
       }
 
@@ -96,8 +98,9 @@ class RadioScreen extends Screen {
       //check for station change;
       if (oldCurrentStation!=currentStation) {
         if (isPlaying) {
-          isPlaying = false;
+          //isPlaying = false;
           soundFiles[oldCurrentStation].pause();
+          queuedMusicPlay=true;
         }
         oldCurrentStation = currentStation;
       }

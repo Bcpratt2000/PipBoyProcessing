@@ -6,10 +6,20 @@ class HomeScreen extends Screen {
   void drawFrame(int px, int py) {
     textSize(30);
     textAlign(CENTER);
-    text("PipBoy 2000 Mini", 320, 340);
+    text("PipBoy 3000 TS", 320, 340);
     image(mapToColor(loadImage("assets/boy.png"), STROKE_COLOR), 239, 60);
     textAlign(LEFT);
+    
+    //Time
     text(getFormattedTimeString(), 20, 270);
+    
+    //Date
+    text(getDate(), 20, 150);
+    
+    //Rads
+    textAlign(RIGHT);
+    text(getRads(), 620, 270);
+    textAlign(LEFT);
   }
 
   String getFormattedTimeString() {
@@ -34,6 +44,19 @@ class HomeScreen extends Screen {
       toRet+= " AM";
     }
 
+    return toRet;
+  }
+  
+  String getRads(){
+    String toRet = "";
+    toRet+="Rad: " + Float.toString((float)Math.pow(noise(second()*.03)*1.5, 10));
+    return toRet.substring(0, 10);
+    //return toRet;
+  }
+  
+  String getDate(){
+    String toRet = "";
+    toRet+=day() + "/" + month() + "/" + year();
     return toRet;
   }
 }
