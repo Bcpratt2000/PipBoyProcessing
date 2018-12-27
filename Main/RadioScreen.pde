@@ -1,7 +1,7 @@
-import processing.sound.*;
+import ddf.minim.*;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-//import Views;
+import java.util.Calendar;
 
 class RadioScreen extends Screen {
 
@@ -9,16 +9,21 @@ class RadioScreen extends Screen {
   int currentStation = 0;
   boolean oldIsPlaying;
   int oldCurrentStation;
+  boolean queuedMusicPlay = false; // flag for queueing music to load on the next frame, in order to have time to draw a loading screen
 
-  SoundFile[] soundFiles = new SoundFile[2];
+  Minim minim;
+
+  AudioPlayer[] soundFiles = new AudioPlayer[2];
   String[] soundLabels = new String[2];
 
 
   public RadioScreen(String name, int BKG_COLOR, int STROKE_COLOR, PApplet parent) {
     super(name, BKG_COLOR, STROKE_COLOR, parent);
 
+    minim = new Minim(PARENT);
+
     println("Loading Sound Files");
-    soundFiles[0] = new SoundFile(PARENT, "assets/DiamondCityRadioSmall.wav");
+    soundFiles[0] = minim.loadFile("assets/DiamondCityRadio.mp3");
     soundFiles[1] = null;
     println("Sound Loaded");
     soundLabels[0] = "Diamond City Radio";
@@ -29,6 +34,7 @@ class RadioScreen extends Screen {
   }
 
   void drawFrame(int px, int py) {
+    handleMusic();
 
     stroke(STROKE_COLOR);
 
@@ -47,19 +53,21 @@ class RadioScreen extends Screen {
       rect(470, 120, 20, 60);
       rect(510, 120, 20, 60);
     } else {
-      triangle(530, 150, 470, 120, 470, 180);  
+      triangle(530, 150, 470, 120, 470, 180);
     }
-    
+
     //check is play/pause button is pressed
-    if(px>470 && py<530 && py>120 && py<180)
+    if (px>470 && py<530 && py>120 && py<180)
       isPlaying=!isPlaying;
-    
+
 
     //draw station name
     textAlign(CENTER);
     text(soundLabels[currentStation], 500, 300);
 
-    handleMusic();
+    if (queuedMusicPlay) {
+      text("Establishing Connection...", 500, 260);
+    }
   }
 
   void init() {
@@ -70,12 +78,17 @@ class RadioScreen extends Screen {
 
       //println("Music Loop");
 
+      if (queuedMusicPlay) {
+        soundFiles[currentStation].play((int)(getMsSinceMidnight()%soundFiles[currentStation].length()/2));
+        queuedMusicPlay = false;
+      }
+
       //check if state change
       if (oldIsPlaying!=isPlaying) {
         if (oldIsPlaying) {
-          soundFiles[currentStation].stop();
+          soundFiles[currentStation].pause();
         } else {
-          soundFiles[currentStation].play();
+          queuedMusicPlay = true;
         }
         oldIsPlaying = isPlaying;
       }
@@ -83,8 +96,8 @@ class RadioScreen extends Screen {
       //check for station change;
       if (oldCurrentStation!=currentStation) {
         if (isPlaying) {
-          soundFiles[oldCurrentStation].stop();
-          soundFiles[currentStation].play();
+          isPlaying = false;
+          soundFiles[oldCurrentStation].pause();
         }
         oldCurrentStation = currentStation;
       }
@@ -96,8 +109,17 @@ class RadioScreen extends Screen {
 
       textAlign(LEFT);
       textSize(12);
-      text(sw.toString(), 0, 75);
+      text(sw.toString(), 0, 180);
       e.printStackTrace();
     }
+  }
+
+  private long getMsSinceMidnight() {
+    Calendar c = Calendar.getInstance();
+    long now = c.getTimeInMillis();
+    c.set(Calendar.HOUR_OF_DAY, 0);
+    c.set(Calendar.MINUTE, 0);
+    c.set(Calendar.SECOND, 0);
+    return now - c.getTimeInMillis();
   }
 }
