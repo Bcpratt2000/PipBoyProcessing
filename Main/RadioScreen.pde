@@ -1,16 +1,17 @@
 import processing.sound.*;
 import java.io.StringWriter;
 import java.io.PrintWriter;
+//import Views;
 
 class RadioScreen extends Screen {
 
-  boolean isPlaying = true;
+  boolean isPlaying = false;
   int currentStation = 0;
   boolean oldIsPlaying;
   int oldCurrentStation;
 
-  SoundFile[] soundFiles = new SoundFile[1];
-  String[] soundLabels = new String[1];
+  SoundFile[] soundFiles = new SoundFile[2];
+  String[] soundLabels = new String[2];
 
 
   public RadioScreen(String name, int BKG_COLOR, int STROKE_COLOR, PApplet parent) {
@@ -18,15 +19,46 @@ class RadioScreen extends Screen {
 
     println("Loading Sound Files");
     soundFiles[0] = new SoundFile(PARENT, "assets/DiamondCityRadioSmall.wav");
+    soundFiles[1] = null;
     println("Sound Loaded");
     soundLabels[0] = "Diamond City Radio";
+    soundLabels[1] = "Classical Radio";
 
     oldCurrentStation = currentStation;
     oldIsPlaying = false;
-    
   }
 
   void drawFrame(int px, int py) {
+
+    stroke(STROKE_COLOR);
+
+    //draw current station list and update currentStation variable;
+    int tempSelected = Views.listView(PARENT, 0, 60, 360, 360, 40, soundLabels, 20, currentStation, false, px, py);
+    if (tempSelected!=-1) {
+      currentStation=tempSelected;
+      //println(selected);
+    }
+
+    //right size of screen with play button and station name
+
+    //draw play/pause Button
+    fill(STROKE_COLOR);
+    if (isPlaying) {
+      rect(470, 120, 20, 60);
+      rect(510, 120, 20, 60);
+    } else {
+      triangle(530, 150, 470, 120, 470, 180);  
+    }
+    
+    //check is play/pause button is pressed
+    if(px>470 && py<530 && py>120 && py<180)
+      isPlaying=!isPlaying;
+    
+
+    //draw station name
+    textAlign(CENTER);
+    text(soundLabels[currentStation], 500, 300);
+
     handleMusic();
   }
 
@@ -36,7 +68,7 @@ class RadioScreen extends Screen {
   void handleMusic() {
     try {
 
-      println("Music Loop");
+      //println("Music Loop");
 
       //check if state change
       if (oldIsPlaying!=isPlaying) {

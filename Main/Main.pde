@@ -13,8 +13,6 @@ void setup() {
   strokeWeight(2);
   frameRate(24);
   background(mapToColor(loadImage("assets/startup.png"), STROKE_COLOR));
-  
-  
 }
 
 
@@ -25,9 +23,9 @@ void draw() {
     //delay(2500);
     isFirst=false;
     screenArray[0] = new OverBrightScreen("OverBright", BKG_COLOR, STROKE_COLOR, this);
-  screenArray[1] = new HomeScreen("Home", BKG_COLOR, STROKE_COLOR, this);
-  screenArray[2] = new MapScreen("Map", BKG_COLOR, STROKE_COLOR, this);
-  screenArray[3] = new RadioScreen("Radio", BKG_COLOR, STROKE_COLOR, this);
+    screenArray[1] = new HomeScreen("Home", BKG_COLOR, STROKE_COLOR, this);
+    screenArray[2] = new MapScreen("Map", BKG_COLOR, STROKE_COLOR, this);
+    screenArray[3] = new RadioScreen("Radio", BKG_COLOR, STROKE_COLOR, this);
   }
 
   if (mouseHasClicked) {
