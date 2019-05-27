@@ -4,5 +4,8 @@ class MapScreen extends Screen {
   }
   void drawFrame(int px, int py) {
     image(mapToColor(loadImage("assets/Map.jpg"), STROKE_COLOR), 0, 0);
+    textAlign(CENTER);
+    text("Could not establish", 320, 180);
+    text("connection to the server", 320, 210);
   }
 }

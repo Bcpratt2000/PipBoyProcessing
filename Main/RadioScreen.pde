@@ -98,7 +98,6 @@ class RadioScreen extends Screen {
       //check for station change;
       if (oldCurrentStation!=currentStation) {
         if (isPlaying) {
-          //isPlaying = false;
           soundFiles[oldCurrentStation].pause();
           queuedMusicPlay=true;
         }

@@ -35,6 +35,7 @@ void draw() {
     
     minim = new Minim(this);
     soundPress = minim.loadFile("assets/PipBoy/UI_Pipboy_OK.mp3");
+    soundPress.setGain(-9);
     soundHum = minim.loadFile("assets/PipBoy/UI_PipBoy_Hum_LP.wav");
     soundHum.setGain(-12);
     soundHum.loop();

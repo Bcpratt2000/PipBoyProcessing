@@ -5,6 +5,7 @@ public static class Views {
     int STROKE_COLOR = (target.g.strokeColor);
     int FILL_COLOR = (target.g.fillColor);
     target.noFill();
+    target.strokeWeight(2);
     target.rect(startx, starty, endx-startx, endy-starty);
 
     //draw List and hilight selection

@@ -49,14 +49,24 @@ class HomeScreen extends Screen {
   
   String getRads(){
     String toRet = "";
-    toRet+="Rad: " + Float.toString((float)Math.pow(noise(second()*.03)*1.5, 10));
+    toRet+="Rad: " + Float.toString((float)Math.pow(noise((getMsSinceMidnight()/1000)*.03)*1.5, 10));
     return toRet.substring(0, 10);
     //return toRet;
   }
   
   String getDate(){
     String toRet = "";
-    toRet+=day() + "/" + month() + "/" + year();
+    toRet+=month() + "/" + day() + "/" + year();
     return toRet;
+  }
+  
+  
+  private long getMsSinceMidnight() {
+    Calendar c = Calendar.getInstance();
+    long now = c.getTimeInMillis();
+    c.set(Calendar.HOUR_OF_DAY, 0);
+    c.set(Calendar.MINUTE, 0);
+    c.set(Calendar.SECOND, 0);
+    return now - c.getTimeInMillis();
   }
 }
